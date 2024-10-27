@@ -22,7 +22,7 @@ const EditMovie = () => {
       setMovie(data);
       setUpdatedData({
         title: data.title,
-        releaseDate: data.releaseDate,
+        releaseDate: data.released,
         directors: data.directors.join(', ')
       });
       setLoading(false);
@@ -94,8 +94,8 @@ const EditMovie = () => {
             style={{ width: '100%', padding: '8px', margin: '8px 0' }}
           />
         </label>
-        <button type="button" onClick={handleSave} style={{ backgroundColor: 'blue', color: 'white', padding: '10px', width: '100%', borderRadius: '5px' }}>
-          Save Changes
+        <button type="button" onClick={handleSave} style={{ backgroundColor: 'red', color: 'white', padding: '10px', width: '100%', borderRadius: '5px' }}>
+          Submit Changes
         </button>
       </form>
     </div>
