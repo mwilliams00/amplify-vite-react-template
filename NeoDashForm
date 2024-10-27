@@ -9,8 +9,8 @@ const EditMovie = () => {
   const [loading, setLoading] = useState(true);
   const [updatedData, setUpdatedData] = useState({
     title: '',
-    releaseDate: '',
-    directors: ''
+    released: '',
+    DIRECTED: ''
   });
 
   // Fetch movie data based on movieId
