@@ -1,0 +1,105 @@
+import React, { useState, useEffect } from 'react';
+
+const EditMovie = () => {
+  // Fetch the movie ID from URL params (for example, from NeoDash links)
+  const urlParams = new URLSearchParams(window.location.search);
+  const movieId = urlParams.get('id');
+
+  const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [updatedData, setUpdatedData] = useState({
+    title: '',
+    releaseDate: '',
+    directors: ''
+  });
+
+  // Fetch movie data based on movieId
+  useEffect(() => {
+    const fetchMovie = async () => {
+      // Example API call - replace with actual Neo4j API or custom endpoint
+      const response = await fetch(`/api/movies/${movieId}`);
+      const data = await response.json();
+      setMovie(data);
+      setUpdatedData({
+        title: data.title,
+        releaseDate: data.releaseDate,
+        directors: data.directors.join(', ')
+      });
+      setLoading(false);
+    };
+    fetchMovie();
+  }, [movieId]);
+
+  // Update form data on input change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedData(prevData => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  // Save the updated data (API call to update Neo4j database)
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`/api/movies/${movieId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData)
+      });
+      if (response.ok) {
+        alert('Movie details updated successfully!');
+      } else {
+        alert('Failed to update movie details.');
+      }
+    } catch (error) {
+      console.error('Error updating movie:', error);
+      alert('Error updating movie details.');
+    }
+  };
+
+  if (loading) return <p>Loading movie details...</p>;
+
+  return (
+    <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto', fontFamily: 'Arial' }}>
+      <h2>Edit Movie</h2>
+      <form>
+        <label>
+          Title:
+          <input
+            type="text"
+            name="title"
+            value={updatedData.title}
+            onChange={handleChange}
+            style={{ width: '100%', padding: '8px', margin: '8px 0' }}
+          />
+        </label>
+        <label>
+          Release Date:
+          <input
+            type="date"
+            name="releaseDate"
+            value={updatedData.releaseDate}
+            onChange={handleChange}
+            style={{ width: '100%', padding: '8px', margin: '8px 0' }}
+          />
+        </label>
+        <label>
+          Directors:
+          <input
+            type="text"
+            name="directors"
+            value={updatedData.directors}
+            onChange={handleChange}
+            style={{ width: '100%', padding: '8px', margin: '8px 0' }}
+          />
+        </label>
+        <button type="button" onClick={handleSave} style={{ backgroundColor: 'blue', color: 'white', padding: '10px', width: '100%', borderRadius: '5px' }}>
+          Save Changes
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default EditMovie;
